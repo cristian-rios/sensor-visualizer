@@ -29,6 +29,7 @@
         android:ems="10"
         android:hint="contraseña"
         android:inputType="textPassword"
+        android:textColor="#DADADA"
         android:textColorHint="#6DD3D3D3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
