@@ -8,21 +8,22 @@
     tools:context=".MainActivity">
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="176dp"
+        android:layout_marginTop="132dp"
         android:ems="10"
         android:hint="e-mail"
         android:inputType="textEmailAddress"
         android:textColor="#DADADA"
         android:textColorHint="#6DD3D3D3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
@@ -33,7 +34,7 @@
         android:textColorHint="#6DD3D3D3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <TextView
         android:id="@+id/signUpButton"
@@ -54,8 +55,9 @@
         android:layout_marginTop="88dp"
         android:background="#43C86565"
         android:text="loguearme"
+        android:textAllCaps="false"
         android:textColor="#BDBDBD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/pass" />
 </androidx.constraintlayout.widget.ConstraintLayout>
