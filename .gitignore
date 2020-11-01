@@ -83,3 +83,18 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+*.iml
+./SensorRegister/.gradle
+./SensorRegister/local.properties
+./SensorRegister/.idea/caches
+./SensorRegister/.idea/libraries
+./SensorRegister/.idea/modules.xml
+./SensorRegister/.idea/workspace.xml
+./SensorRegister/.idea/navEditor.xml
+./SensorRegister/.idea/assetWizardSettings.xml
+./SensorRegister.DS_Store
+./SensorRegister/build
+./SensorRegister/captures
+./SensorRegister.externalNativeBuild
+./SensorRegister.cxx
