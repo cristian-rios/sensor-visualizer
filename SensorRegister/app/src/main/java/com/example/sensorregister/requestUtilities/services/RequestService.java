@@ -18,5 +18,8 @@ public interface RequestService {
     Call<RegisterResponse> register(@Body RegisterRequest registerRequest);
 
     @POST("api/api/login")
+    @Headers({
+            "content-type: application/json",
+    })
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 }

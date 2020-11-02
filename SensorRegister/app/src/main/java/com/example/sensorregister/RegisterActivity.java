@@ -98,9 +98,9 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 if (response.isSuccessful()) {
-                    String token = response.body().getToken();
-                    String tokenRefresh = response.body().getTokenRefresh();
-                    String env = response.body().getEnv();
+//                    String token = response.body().getToken();
+//                    String tokenRefresh = response.body().getTokenRefresh();
+//                    String env = response.body().getEnv();
                     Toast.makeText(getApplicationContext(), getString(R.string.registerSuccessMsg), Toast.LENGTH_SHORT).show();
                     Log.i(getString(R.string.registerTagLog), getString(R.string.registerSuccessMsgLog));
                     Intent intent = new Intent(RegisterActivity.this, SensorActivity.class);
