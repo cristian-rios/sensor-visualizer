@@ -2,15 +2,37 @@ package com.example.sensorregister;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.hardware.Sensor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.sensorregister.requestUtilities.register.RegisterRequest;
+import com.example.sensorregister.requestUtilities.register.RegisterResponse;
+import com.example.sensorregister.requestUtilities.services.RequestService;
+
+import org.w3c.dom.Text;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
     private Bundle bundle;
     private TextView mail, pass, name, lastname, dni, commission;
-    private Button signUpButton;
+    private Button submitBttn;
+    private Retrofit retrofit;
+    private RequestService requestService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,20 +40,84 @@ public class RegisterActivity extends AppCompatActivity {
 
         setupViews();
         loadFromIntent();
+        setupRetrofit();
     }
 
     public View.OnClickListener buttonsListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.signUpButton:
+            switch (view.getId()) {
+                case R.id.submitBttn:
+                    register();
                     break;
             }
         }
     };
 
-    private void register() {
+    private void setupRetrofit() {
 
+        retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(getString(R.string.uri))
+                .build();
+
+        requestService = retrofit.create(RequestService.class);
+    }
+
+    private boolean areFieldsValid() {
+        if (mail.getText() != null &&
+                pass.getText() != null &&
+                name.getText() != null &&
+                lastname.getText() != null &&
+                dni.getText() != null &&
+                commission.getText() != null)
+            return true;
+        Toast.makeText(getApplicationContext(), getString(R.string.invalidForm), Toast.LENGTH_SHORT);
+        return false;
+    }
+
+    private RegisterRequest populateRequest() {
+        return new RegisterRequest(
+                mail.getText().toString(),
+                pass.getText().toString(),
+                name.getText().toString(),
+                lastname.getText().toString(),
+                Long.parseLong(dni.getText().toString()),
+                Long.parseLong(commission.getText().toString()),
+                getString(R.string.testEnv)
+        );
+    }
+
+    private void register() {
+        if (!areFieldsValid()) return;
+        RegisterRequest request = populateRequest();
+        Call<RegisterResponse> call = requestService.register(request);
+        call.enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                if (response.isSuccessful()) {
+                    String token = response.body().getToken();
+                    String tokenRefresh = response.body().getTokenRefresh();
+                    String env = response.body().getEnv();
+                    Toast.makeText(getApplicationContext(), getString(R.string.registerSuccessMsgLog), Toast.LENGTH_SHORT).show();
+                    Log.i(getString(R.string.registerTagLog), getString(R.string.registerSuccessMsgLog));
+                    Intent intent = new Intent(RegisterActivity.this, SensorActivity.class);
+                    startActivity(intent);
+                } else {
+                    Log.e(getString(R.string.registerTagLog), getString(R.string.registerErrorMsgLog));
+                    try {
+                        Toast.makeText(getApplicationContext(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Log.e(getString(R.string.exception), e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                Log.e(getString(R.string.registerTagLog), t.getMessage());
+            }
+        });
     }
 
     private void setupViews() {
@@ -41,7 +127,8 @@ public class RegisterActivity extends AppCompatActivity {
         lastname = (TextView) findViewById(R.id.lastname);
         dni = (TextView) findViewById(R.id.dni);
         commission = (TextView) findViewById(R.id.commission);
-        signUpButton = (Button) findViewById(R.id.signUpButton);
+        submitBttn = (Button) findViewById(R.id.submitBttn);
+        submitBttn.setOnClickListener(buttonsListener);
     }
 
     private void loadFromIntent() {
