@@ -17,4 +17,9 @@
     <string name="invalidForm">Todos los campos deben estar completos para continuar</string>
     <string name="errorResponseMsgKey">msg</string>
     <string name="batteryToast">Batería: </string>
+    <string name="beginWaiting">sonando en 20 segundos</string>
+    <string name="startingMusic">musica!</string>
+    <string name="startMusicBttn">musica en 20 segundos</string>
+    <string name="stopMusicBttn">parar la música</string>
+    <string name="waitThreadId">waitThread</string>
 </resources>
