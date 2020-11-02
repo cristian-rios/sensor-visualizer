@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        env =  getString(R.string.testEnv);
+        env =  getString(R.string.prodEnv);
         setupViews();
         setupRetrofit();
         registerReceivers();
