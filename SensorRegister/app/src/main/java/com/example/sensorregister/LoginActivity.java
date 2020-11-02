@@ -27,12 +27,11 @@ public class LoginActivity extends AppCompatActivity {
     public View.OnClickListener buttonsListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent;
             switch (view.getId()){
                 case R.id.loginBttn:
                     break;
                 case R.id.signUpButton:
-                    intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                     intent.putExtra("mail", mail.getText().toString());
                     startActivity(intent);
                     break;
