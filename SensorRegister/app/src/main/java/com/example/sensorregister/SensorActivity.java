@@ -79,7 +79,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         gyroZ = (TextView) findViewById(R.id.gyroZ);
     }
 
-    private void registerListeners() {
+    private void registerReceivers() {
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY), SensorManager.SENSOR_DELAY_NORMAL);
@@ -87,7 +87,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY), SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private void unregisterListeners() {
+    private void unregisterReceivers() {
         sensorManager.unregisterListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
         sensorManager.unregisterListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
         sensorManager.unregisterListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY));
@@ -97,31 +97,31 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     @Override
     protected void onStop() {
-        unregisterListeners();
+        unregisterReceivers();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        unregisterListeners();
+        unregisterReceivers();
         super.onDestroy();
     }
 
     @Override
     protected void onPause() {
-        unregisterListeners();
+        unregisterReceivers();
         super.onPause();
     }
 
     @Override
     protected void onRestart() {
-        registerListeners();
+        registerReceivers();
         super.onRestart();
     }
 
     @Override
     protected void onResume() {
-        registerListeners();
+        registerReceivers();
         super.onResume();
     }
 }

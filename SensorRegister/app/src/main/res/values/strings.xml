@@ -16,4 +16,5 @@
     <string name="loginErrorMsgLog">Login Error</string>
     <string name="invalidForm">Todos los campos deben estar completos para continuar</string>
     <string name="errorResponseMsgKey">msg</string>
+    <string name="batteryToast">Batería: </string>
 </resources>

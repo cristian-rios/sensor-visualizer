@@ -2,7 +2,11 @@ package com.example.sensorregister;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +19,6 @@ import com.example.sensorregister.requestUtilities.login.LoginResponse;
 import com.example.sensorregister.requestUtilities.services.RequestService;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,7 +41,17 @@ public class LoginActivity extends AppCompatActivity {
 
         setupViews();
         setupRetrofit();
+        registerReceivers();
     }
+
+
+    private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            Toast.makeText(getApplicationContext(), getString(R.string.batteryToast) + String.valueOf(level) + "%", Toast.LENGTH_LONG).show();
+        }
+    };
 
     public View.OnClickListener buttonsListener = new View.OnClickListener() {
         @Override
@@ -125,4 +138,41 @@ public class LoginActivity extends AppCompatActivity {
         loginService = retrofit.create(RequestService.class);
     }
 
+    private void registerReceivers() {
+        registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    }
+
+    private void unregisterReceivers() {
+        unregisterReceiver(batteryReceiver);
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceivers();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceivers();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceivers();
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        registerReceivers();
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume() {
+        registerReceivers();
+        super.onResume();
+    }
 }
