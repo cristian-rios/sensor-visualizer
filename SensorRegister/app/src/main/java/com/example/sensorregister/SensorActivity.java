@@ -241,6 +241,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     private void loadFromIntent() {
         bundle = getIntent().getExtras();
-        token = bundle.getString("mail");
+        token = bundle.getString("token");
     }
 }

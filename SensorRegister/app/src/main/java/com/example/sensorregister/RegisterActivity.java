@@ -111,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                     token = response.body().getToken();
                     postEvent(new EventRequest(env, getString(R.string.eventRegister), getString(R.string.eventRegisterDesc)));
                     Intent intent = new Intent(RegisterActivity.this, SensorActivity.class);
+                    intent.putExtra("token", token);
                     startActivity(intent);
                 } else {
                     Log.e(getString(R.string.registerTagLog), getString(R.string.registerErrorMsgLog));

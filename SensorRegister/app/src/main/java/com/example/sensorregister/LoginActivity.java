@@ -101,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i(getString(R.string.loginTagLog), getString(R.string.loginSuccessMsgLog));
                     postEvent(new EventRequest(env, getString(R.string.eventLogin), getString(R.string.eventLoginDesc)));
                     Intent intent = new Intent(LoginActivity.this, SensorActivity.class);
+                    intent.putExtra("token", token);
                     startActivity(intent);
                 } else {
                     Log.e(getString(R.string.loginTagLog), getString(R.string.loginErrorMsgLog));
