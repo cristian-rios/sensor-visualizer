@@ -221,7 +221,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         @Override
         protected String doInBackground(String... params) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(20000);
             } catch (InterruptedException e) {
                 Log.e(getString(R.string.exception), e.getMessage());
             }
