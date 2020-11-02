@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sensorregister.requestUtilities.event.EventRequest;
+import com.example.sensorregister.requestUtilities.event.EventResponse;
 import com.example.sensorregister.requestUtilities.login.LoginRequest;
 import com.example.sensorregister.requestUtilities.login.LoginResponse;
 import com.example.sensorregister.requestUtilities.services.RequestService;
@@ -33,12 +35,14 @@ public class LoginActivity extends AppCompatActivity {
     private TextView password;
     private Retrofit retrofit;
     private RequestService loginService;
-
+    private RequestService eventService;
+    private String env;
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        env =  getString(R.string.testEnv);
         setupViews();
         setupRetrofit();
         registerReceivers();
@@ -93,7 +97,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), getString(R.string.loginSuccessMsg), Toast.LENGTH_SHORT).show();
+                    token = response.body().getToken();
                     Log.i(getString(R.string.loginTagLog), getString(R.string.loginSuccessMsgLog));
+                    postEvent(new EventRequest(env, getString(R.string.eventLogin), getString(R.string.eventLoginDesc)));
                     Intent intent = new Intent(LoginActivity.this, SensorActivity.class);
                     startActivity(intent);
                 } else {
@@ -110,6 +116,32 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 Log.e(getString(R.string.loginTagLog), t.getMessage());
+            }
+        });
+    }
+
+    private void postEvent(EventRequest request) {
+        Call<EventResponse> call = eventService.event("Bearer" + token, request);
+        call.enqueue(new Callback<EventResponse>() {
+            @Override
+            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.i(getString(R.string.eventTagLog), getString(R.string.eventSuccessMsgLog));
+                    Toast.makeText(getApplicationContext(), getString(R.string.eventSuccessMsg), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e(getString(R.string.eventTagLog), getString(R.string.eventErrorMsgLog));
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getApplicationContext(), jsonResponse.getString(getString(R.string.errorResponseMsgKey)), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Log.e(getString(R.string.exception), e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventResponse> call, Throwable t) {
+                Log.e(getString(R.string.eventTagLog), t.getMessage());
             }
         });
     }
@@ -136,6 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         loginService = retrofit.create(RequestService.class);
+        eventService = retrofit.create(RequestService.class);
     }
 
     private void registerReceivers() {

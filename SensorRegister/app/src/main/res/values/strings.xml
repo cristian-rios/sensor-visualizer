@@ -2,7 +2,7 @@
     <string name="app_name">SensorRegister</string>
     <string name="uri">http://so-unlam.net.ar/</string>
     <string name="testEnv">TEST</string>
-    <string name="prodEnv">PROD</string>
+    <string name="prodEnv">AAAA</string>
     <string name="exception">EXCEPTION</string>
     <string name="registerSuccessMsg">Bienvenido!</string>
     <string name="registerSubmitMsg">Vamos a validar el nuevo usuario</string>
@@ -22,4 +22,19 @@
     <string name="startMusicBttn">musica en 20 segundos</string>
     <string name="stopMusicBttn">parar la música</string>
     <string name="waitThreadId">waitThread</string>
+    <string name="eventTagLog">Event</string>
+    <string name="eventSuccessMsgLog">Event Post Successful</string>
+    <string name="eventErrorMsgLog">Event Post Error</string>
+    <string name="eventSuccessMsg">Evento guardado!</string>
+
+    <string name="eventMusic">EVENTO_MUSICA</string>
+    <string name="eventMusicDesc">Se ha comenzado la musica</string>
+    <string name="eventAccelerometer">EVENTO_ACELEROMETRO</string>
+    <string name="eventAccelerometerDesc">Se ha leido valor de aceleracion sobre el umbral</string>
+    <string name="eventGravity">EVENTO_GRAVITY</string>
+    <string name="eventGravityDesc">Se ha leido un valor de gravedad sobre el umbral para los tres ejes</string>
+    <string name="eventLogin">EVENTO_LOGIN</string>
+    <string name="eventLoginDesc">Se ha logueado correctamente</string>
+    <string name="eventRegister">EVENTO_REGISTRO</string>
+    <string name="eventRegisterDesc">Se ha creado el usuario</string>
 </resources>
