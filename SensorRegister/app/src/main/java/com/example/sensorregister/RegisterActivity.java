@@ -15,6 +15,7 @@ import com.example.sensorregister.requestUtilities.register.RegisterRequest;
 import com.example.sensorregister.requestUtilities.register.RegisterResponse;
 import com.example.sensorregister.requestUtilities.services.RequestService;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -65,14 +66,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean areFieldsValid() {
-        if (mail.getText() != null &&
-                pass.getText() != null &&
-                name.getText() != null &&
-                lastname.getText() != null &&
-                dni.getText() != null &&
-                commission.getText() != null)
+        if (!mail.getText().toString().isEmpty() &&
+                !pass.getText().toString().isEmpty() &&
+                !name.getText().toString().isEmpty() &&
+                !lastname.getText().toString().isEmpty() &&
+                !dni.getText().toString().isEmpty() &&
+                !commission.getText().toString().isEmpty())
             return true;
-        Toast.makeText(getApplicationContext(), getString(R.string.invalidForm), Toast.LENGTH_SHORT);
+        Toast.makeText(getApplicationContext(), getString(R.string.invalidForm), Toast.LENGTH_SHORT).show();
         return false;
     }
 
@@ -91,6 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void register() {
         if (!areFieldsValid()) return;
         RegisterRequest request = populateRequest();
+        Toast.makeText(getApplicationContext(), getString(R.string.registerSubmitMsg), Toast.LENGTH_SHORT).show();
         Call<RegisterResponse> call = requestService.register(request);
         call.enqueue(new Callback<RegisterResponse>() {
             @Override
@@ -99,15 +101,16 @@ public class RegisterActivity extends AppCompatActivity {
                     String token = response.body().getToken();
                     String tokenRefresh = response.body().getTokenRefresh();
                     String env = response.body().getEnv();
-                    Toast.makeText(getApplicationContext(), getString(R.string.registerSuccessMsgLog), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.registerSuccessMsg), Toast.LENGTH_SHORT).show();
                     Log.i(getString(R.string.registerTagLog), getString(R.string.registerSuccessMsgLog));
                     Intent intent = new Intent(RegisterActivity.this, SensorActivity.class);
                     startActivity(intent);
                 } else {
                     Log.e(getString(R.string.registerTagLog), getString(R.string.registerErrorMsgLog));
                     try {
-                        Toast.makeText(getApplicationContext(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
+                        JSONObject jsonResponse = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getApplicationContext(), jsonResponse.getString(getString(R.string.errorResponseMsgKey)), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
                         Log.e(getString(R.string.exception), e.getMessage());
                     }
                 }
