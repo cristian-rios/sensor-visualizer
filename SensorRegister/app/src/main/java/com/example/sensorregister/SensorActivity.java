@@ -52,7 +52,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
-        env = getString(R.string.testEnv);
+        env = getString(R.string.prodEnv);
         setupViews();
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         musicSounding = false;

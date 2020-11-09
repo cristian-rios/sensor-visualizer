@@ -48,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        env = getString(R.string.testEnv);
+        env = getString(R.string.prodEnv);
         setupViews();
         loadFromIntent();
         setupRetrofit();
@@ -100,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                 lastname.getText().toString(),
                 Long.parseLong(dni.getText().toString()),
                 Long.parseLong(commission.getText().toString()),
-                getString(R.string.testEnv)
+                getString(R.string.prodEnv)
         );
     }
 
