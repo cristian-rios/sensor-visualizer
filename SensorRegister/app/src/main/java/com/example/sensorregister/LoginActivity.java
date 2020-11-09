@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        env =  getString(R.string.prodEnv);
+        env =  getString(R.string.testEnv);
         setupViews();
         setupRetrofit();
         registerReceivers();
@@ -193,19 +193,16 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        unregisterReceivers();
         super.onPause();
     }
 
     @Override
     protected void onRestart() {
-        registerReceivers();
         super.onRestart();
     }
 
     @Override
     protected void onResume() {
-        registerReceivers();
         super.onResume();
     }
 }

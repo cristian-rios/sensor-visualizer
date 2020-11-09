@@ -23,6 +23,7 @@ import com.example.sensorregister.requestUtilities.services.RequestService;
 
 import org.json.JSONObject;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,12 +50,13 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
-        env = getString(R.string.prodEnv);
+        env = getString(R.string.testEnv);
         setupViews();
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         musicSounding = false;
         musicIntent = new Intent(SensorActivity.this, MusicService.class);
         setupRetrofit();
+        loadFromIntent();
     }
 
     @Override
@@ -111,7 +113,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
                 if (response.isSuccessful()) {
                     Log.i(getString(R.string.eventTagLog), getString(R.string.eventSuccessMsgLog));
-                    Toast.makeText(getApplicationContext(), getString(R.string.eventSuccessMsg), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), request.getDescription(), Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e(getString(R.string.eventTagLog), getString(R.string.eventErrorMsgLog));
                     try {

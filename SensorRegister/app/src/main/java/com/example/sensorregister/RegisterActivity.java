@@ -45,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        env = getString(R.string.prodEnv);
+        env = getString(R.string.testEnv);
         setupViews();
         loadFromIntent();
         setupRetrofit();
