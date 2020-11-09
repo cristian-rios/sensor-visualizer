@@ -24,6 +24,7 @@ import com.example.sensorregister.requestUtilities.services.RequestService;
 import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
+import resources.EventManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +44,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     private Intent musicIntent;
     private Retrofit retrofit;
     private RequestService eventService;
+    private EventManager eventManager;
     private String env;
     private String token;
     private Bundle bundle;
@@ -65,7 +67,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             switch (sensorEvent.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     if(sensorEvent.values[0] > 10 || sensorEvent.values[1] > 10 || sensorEvent.values[2] > 10)
-                        postEvent(new EventRequest(env, getString(R.string.eventAccelerometer), getString(R.string.eventAccelerometerDesc)));
+                        eventManager.post(new EventRequest(env, getString(R.string.eventAccelerometer), getString(R.string.eventAccelerometerDesc)));
                     accelX.setText(String.valueOf(sensorEvent.values[0]));
                     accelY.setText(String.valueOf(sensorEvent.values[1]));
                     accelZ.setText(String.valueOf(sensorEvent.values[2]));
@@ -78,7 +80,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                     break;
                 case Sensor.TYPE_GRAVITY:
                     if(sensorEvent.values[0] > 5 && sensorEvent.values[1] > 5 && sensorEvent.values[2] > 5)
-                        postEvent(new EventRequest(env, getString(R.string.eventGravity), getString(R.string.eventGravityDesc)));
+                        eventManager.post(new EventRequest(env, getString(R.string.eventGravity), getString(R.string.eventGravityDesc)));
                     gravX.setText(String.valueOf(sensorEvent.values[0]));
                     gravY.setText(String.valueOf(sensorEvent.values[1]));
                     gravZ.setText(String.valueOf(sensorEvent.values[2]));
@@ -103,33 +105,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                 .baseUrl(getString(R.string.uri))
                 .build();
 
-        eventService = retrofit.create(RequestService.class);
-    }
-
-    private void postEvent(EventRequest request) {
-        Call<EventResponse> call = eventService.event("Bearer" + token, request);
-        call.enqueue(new Callback<EventResponse>() {
-            @Override
-            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.i(getString(R.string.eventTagLog), getString(R.string.eventSuccessMsgLog));
-                    Toast.makeText(getApplicationContext(), request.getDescription(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e(getString(R.string.eventTagLog), getString(R.string.eventErrorMsgLog));
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getApplicationContext(), jsonResponse.getString(getString(R.string.errorResponseMsgKey)), Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Log.e(getString(R.string.exception), e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<EventResponse> call, Throwable t) {
-                Log.e(getString(R.string.eventTagLog), t.getMessage());
-            }
-        });
+        eventManager = new EventManager(getApplicationContext(), retrofit.create(RequestService.class));
     }
 
     public View.OnClickListener buttonsListener = view -> {
@@ -237,12 +213,13 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             musicBttn.setText(getString(R.string.stopMusicBttn));
             musicSounding = true;
             startService(musicIntent);
-            postEvent(new EventRequest(env, getString(R.string.eventMusic), getString(R.string.eventMusicDesc)));
+            eventManager.post(new EventRequest(env, getString(R.string.eventMusic), getString(R.string.eventMusicDesc)));
         }
     }
 
     private void loadFromIntent() {
         bundle = getIntent().getExtras();
         token = bundle.getString("token");
+        eventManager.setToken(token);
     }
 }

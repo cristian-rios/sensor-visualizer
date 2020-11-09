@@ -22,6 +22,7 @@ import com.example.sensorregister.requestUtilities.services.RequestService;
 
 import org.json.JSONObject;
 
+import resources.EventManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,9 +36,9 @@ public class LoginActivity extends AppCompatActivity {
     private TextView password;
     private Retrofit retrofit;
     private RequestService loginService;
-    private RequestService eventService;
     private String env;
     private String token;
+    private EventManager eventManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), getString(R.string.loginSuccessMsg), Toast.LENGTH_SHORT).show();
                     token = response.body().getToken();
                     Log.i(getString(R.string.loginTagLog), getString(R.string.loginSuccessMsgLog));
-                    postEvent(new EventRequest(env, getString(R.string.eventLogin), getString(R.string.eventLoginDesc)));
+                    eventManager.setToken(token).post(new EventRequest(env, getString(R.string.eventLogin), getString(R.string.eventLoginDesc)));
                     Intent intent = new Intent(LoginActivity.this, SensorActivity.class);
                     intent.putExtra("token", token);
                     startActivity(intent);
@@ -117,32 +118,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 Log.e(getString(R.string.loginTagLog), t.getMessage());
-            }
-        });
-    }
-
-    private void postEvent(EventRequest request) {
-        Call<EventResponse> call = eventService.event("Bearer" + token, request);
-        call.enqueue(new Callback<EventResponse>() {
-            @Override
-            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.i(getString(R.string.eventTagLog), getString(R.string.eventSuccessMsgLog));
-                    Toast.makeText(getApplicationContext(), getString(R.string.eventSuccessMsg), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e(getString(R.string.eventTagLog), getString(R.string.eventErrorMsgLog));
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getApplicationContext(), jsonResponse.getString(getString(R.string.errorResponseMsgKey)), Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Log.e(getString(R.string.exception), e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<EventResponse> call, Throwable t) {
-                Log.e(getString(R.string.eventTagLog), t.getMessage());
             }
         });
     }
@@ -169,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         loginService = retrofit.create(RequestService.class);
-        eventService = retrofit.create(RequestService.class);
+        eventManager = new EventManager(getApplicationContext(), retrofit.create(RequestService.class));
     }
 
     private void registerReceivers() {
@@ -181,28 +156,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     protected void onDestroy() {
         unregisterReceivers();
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 }

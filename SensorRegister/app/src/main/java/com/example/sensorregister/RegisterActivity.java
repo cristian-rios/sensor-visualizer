@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import okhttp3.Request;
 import okhttp3.ResponseBody;
+import resources.EventManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,10 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
     private Button submitBttn;
     private Retrofit retrofit;
     private RequestService requestService;
-    private RequestService eventService;
     private String env;
     private String token;
-
+    private EventManager eventManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .build();
 
         requestService = retrofit.create(RequestService.class);
-        eventService = retrofit.create(RequestService.class);
+        eventManager = new EventManager(getApplicationContext(), retrofit.create(RequestService.class));
     }
 
     private boolean areFieldsValid() {
@@ -109,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), getString(R.string.registerSuccessMsg), Toast.LENGTH_SHORT).show();
                     Log.i(getString(R.string.registerTagLog), getString(R.string.registerSuccessMsgLog));
                     token = response.body().getToken();
-                    postEvent(new EventRequest(env, getString(R.string.eventRegister), getString(R.string.eventRegisterDesc)));
+                    eventManager.setToken(token).post(new EventRequest(env, getString(R.string.eventRegister), getString(R.string.eventRegisterDesc)));
                     Intent intent = new Intent(RegisterActivity.this, SensorActivity.class);
                     intent.putExtra("token", token);
                     startActivity(intent);
@@ -145,31 +145,5 @@ public class RegisterActivity extends AppCompatActivity {
     private void loadFromIntent() {
         bundle = getIntent().getExtras();
         mail.setText(bundle.getString("mail"));
-    }
-
-    private void postEvent(EventRequest request) {
-        Call<EventResponse> call = eventService.event("Bearer" + token, request);
-        call.enqueue(new Callback<EventResponse>() {
-            @Override
-            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.i(getString(R.string.eventTagLog), getString(R.string.eventSuccessMsgLog));
-                    Toast.makeText(getApplicationContext(), getString(R.string.eventSuccessMsg), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e(getString(R.string.eventTagLog), getString(R.string.eventErrorMsgLog));
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getApplicationContext(), jsonResponse.getString(getString(R.string.errorResponseMsgKey)), Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Log.e(getString(R.string.exception), e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<EventResponse> call, Throwable t) {
-                Log.e(getString(R.string.eventTagLog), t.getMessage());
-            }
-        });
     }
 }
