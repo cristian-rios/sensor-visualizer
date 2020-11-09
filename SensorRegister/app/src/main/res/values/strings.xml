@@ -37,4 +37,7 @@
     <string name="eventLoginDesc">Se ha logueado correctamente</string>
     <string name="eventRegister">EVENTO_REGISTRO</string>
     <string name="eventRegisterDesc">Se ha creado el usuario</string>
+
+    <string name="isConnected">Estado de conexión estable!</string>
+    <string name="isDisconnected">No conectado</string>
 </resources>

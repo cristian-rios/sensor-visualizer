@@ -23,6 +23,7 @@ import com.example.sensorregister.requestUtilities.services.RequestService;
 import org.json.JSONObject;
 
 import resources.EventManager;
+import resources.InternetManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
     private Button loginBttn;
+    private Button connectionBttn;
     private TextView registerText;
     private TextView mail;
     private TextView password;
@@ -39,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private String env;
     private String token;
     private EventManager eventManager;
+    private InternetManager internetManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         setupViews();
         setupRetrofit();
         registerReceivers();
+        internetManager = new InternetManager(getApplicationContext());
     }
 
 
@@ -68,7 +72,9 @@ public class LoginActivity extends AppCompatActivity {
                 case R.id.signUpButton:
                     goToRegisterActivity();
                     break;
-
+                case R.id.validateConnection:
+                    internetManager.check();
+                    break;
             }
         }
     };
@@ -132,6 +138,8 @@ public class LoginActivity extends AppCompatActivity {
         mail = (TextView) findViewById(R.id.mail);
         loginBttn = (Button) findViewById(R.id.loginBttn);
         loginBttn.setOnClickListener(buttonsListener);
+        connectionBttn = (Button) findViewById(R.id.validateConnection);
+        connectionBttn.setOnClickListener(buttonsListener);
         registerText = (TextView) findViewById(R.id.signUpButton);
         registerText.setOnClickListener(buttonsListener);
         password = (TextView) findViewById(R.id.pass);

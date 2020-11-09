@@ -25,6 +25,7 @@ import java.io.IOException;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 import resources.EventManager;
+import resources.InternetManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,11 +37,13 @@ public class RegisterActivity extends AppCompatActivity {
     private Bundle bundle;
     private TextView mail, pass, name, lastname, dni, commission;
     private Button submitBttn;
+    private Button connectionBttn;
     private Retrofit retrofit;
     private RequestService requestService;
     private String env;
     private String token;
     private EventManager eventManager;
+    private InternetManager internetManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
         setupViews();
         loadFromIntent();
         setupRetrofit();
+        internetManager = new InternetManager(getApplicationContext());
     }
 
     public View.OnClickListener buttonsListener = new View.OnClickListener() {
@@ -57,6 +61,9 @@ public class RegisterActivity extends AppCompatActivity {
             switch (view.getId()) {
                 case R.id.submitBttn:
                     register();
+                    break;
+                case R.id.verifyConnectionRegister:
+                    internetManager.check();
                     break;
             }
         }
@@ -140,6 +147,8 @@ public class RegisterActivity extends AppCompatActivity {
         commission = (TextView) findViewById(R.id.commission);
         submitBttn = (Button) findViewById(R.id.submitBttn);
         submitBttn.setOnClickListener(buttonsListener);
+        connectionBttn = (Button) findViewById(R.id.verifyConnectionRegister);
+        connectionBttn.setOnClickListener(buttonsListener);
     }
 
     private void loadFromIntent() {
