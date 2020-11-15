@@ -98,3 +98,4 @@ lint/tmp/
 ./SensorRegister/captures
 ./SensorRegister.externalNativeBuild
 ./SensorRegister.cxx
+./SensorRegister/app/release
