@@ -1,5 +1,5 @@
 # Built application files
-*.apk
+./Codigo/*.apk
 *.aar
 *.ap_
 *.aab
