@@ -30,7 +30,7 @@ public class EventManager {
         service = eventService;
     }
     public void post(EventRequest request) {
-        Call<EventResponse> call = service.event("Bearer" + token, request);
+        Call<EventResponse> call = service.event("Bearer " + token, request);
         call.enqueue(new Callback<EventResponse>() {
             @Override
             public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
